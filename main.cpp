@@ -1,23 +1,17 @@
 #include <iostream>
 #include "set.hpp"
 
-template <typename T, typename E, typename F>
-set<T, E> filter_out(const set<T, E> s1, const set<T, E> s2, F pred) {
-  set<T, E> tmp = new set<T, E>();
-  typename set<T, E>::const_iterator begin, end;
-
-  for (begin = s1.begin(), end = s1.end(); begin != end; begin++) {
-    if (pred(*begin)) {
-      tmp.add(*begin);
-    }
+struct is_even {
+  bool operator()(const int x) {
+    return x % 2 == 0;
   }
+};
 
-  for (begin = s2.begin(), end = s2.end(); begin != end; begin++) {
-    if (pred(*begin)) {
-      tmp.add(*begin);
-    }
+struct is_odd {
+  bool operator()(const int x) {
+    return x % 2 == 1;
   }
-}
+};
 
 void test_fondamentali() {
   set<int> s;
@@ -90,9 +84,24 @@ void test_fondamentali() {
   std::cout << std::endl;
 
   // Clear
-  std::cout << "# Clearing out the set S1 #" << std::endl;
-  s.clear();
-  std::cout << "S1 = " << s << " // Count: " << s.count() << std::endl;
+  std::cout << "# Clearing out the set S3 #" << std::endl;
+  s3.clear();
+  std::cout << "S3 = " << s3 << " // Count: " << s3.count() << std::endl;
+
+  std::cout << std::endl;
+
+  // Filter out
+  std::cout << "# Calling filter_out global function on S1 #" << std::endl;
+  set<int> even = filter_out(s, is_even());
+  std::cout << "EVEN = " << even << std::endl;
+  set<int> odd = filter_out(s, is_odd());
+  std::cout << "ODD = " << odd << std::endl;
+
+  std::cout << std::endl;
+
+  // Concatenate sets
+  std::cout << "# Concatenate two sets (even and odds) #" << std::endl;
+  std::cout << "EVEN + ODD = " << even + odd << std::endl;
 }
 
 int main() {

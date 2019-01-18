@@ -274,4 +274,31 @@ std::ostream &operator<<(std::ostream &stream, const set<T, E> &set) {
 
   return stream;
 }
+
+template <typename T, typename E, typename P>
+set<T, E> filter_out(const set<T, E> s, P pred) {
+  set<T, E> tmp;
+  typename set<T, E>::const_iterator begin, end;
+
+  for (begin = s.begin(), end = s.end(); begin != end; begin++) {
+    if (pred(*begin)) {
+      tmp.add(*begin);
+    }
+  }
+
+  return tmp;
+}
+
+template <typename T, typename E>
+set<T, E> operator+(const set<T, E> s1, const set<T, E> s2) {
+  set<T, E> tmp(s1);
+  typename set<T, E>::const_iterator begin, end;
+
+  for (begin = s2.begin(), end = s2.end(); begin != end; begin++) {
+    tmp.add(*begin);
+  }
+
+  return tmp;
+}
+
 #endif // SET_HPP_
