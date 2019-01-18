@@ -125,8 +125,14 @@ public:
       tmp = tmp->next;
     }
 
-    prev->next = tmp->next;
+    if (tmp == prev) {
+      _head = tmp->next;
+    } else {
+      prev->next = tmp->next;
+    }
+
     delete tmp;
+    tmp = 0;
     _count--;
   }
 
