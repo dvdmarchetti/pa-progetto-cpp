@@ -9,6 +9,7 @@
 
 class value_already_exists {};
 class value_does_not_exists {};
+class index_out_of_bound_exception {};
 
 template <typename T, typename Equal = std::equal_to<T>>
 class set {
@@ -74,7 +75,9 @@ public:
   }
 
   T operator[](int index) {
-    assert(_count >= index);
+    if (index >= _count || index < 0) {
+      throw new index_out_of_bound_exception();
+    }
 
     int items = 0;
     node *tmp = _head;
@@ -94,9 +97,20 @@ public:
     }
 
     node *n = new node(value);
+    n->next = 0;
 
-    n->next = _head;
-    _head = n;
+    if (_head == 0) {
+      _head = n;
+      _count++;
+      return;
+    }
+
+    node *tmp = _head;
+    while (tmp->next != 0) {
+      tmp = tmp->next;
+    }
+
+    tmp->next = n;
     _count++;
   }
 
@@ -122,6 +136,7 @@ public:
       if (_equal(tmp->value, value)) {
         return true;
       }
+
       tmp = tmp->next;
     }
 
@@ -133,10 +148,14 @@ public:
 
     while (tmp != 0) {
       node *next = tmp->next;
+
       delete tmp;
+      tmp = 0;
+
       tmp = next;
     }
 
+    _head = 0;
     _count = 0;
   }
 
