@@ -9,7 +9,7 @@
 
 class value_already_exists {};
 class value_does_not_exists {};
-class index_out_of_bound_exception {};
+class index_out_of_bounds_exception {};
 
 template <typename T, typename Equal = std::equal_to<T>>
 class set {
@@ -27,10 +27,21 @@ private:
   Equal _equal;
 
 public:
+  /**
+   * @brief Default empty constructor
+   *
+   * @return
+   */
   set() : _head(0), _count(0) {
     //
   }
 
+  /**
+   * @brief Copy constructor
+   *
+   * @param other object from where we're copying the values
+   * @return
+   */
   set(const set &other) : _head(0), _count(0) {
     node *tmp = other._head;
 
@@ -45,6 +56,12 @@ public:
     }
   }
 
+  /**
+   * @brief Assign values from another set
+   *
+   * @param other object from where we're copying the values
+   * @return
+   */
   set &operator=(const set &other) {
     if (this == &other) {
       return *this;
@@ -57,10 +74,23 @@ public:
     return *this;
   }
 
+  /**
+   * @brief Clean up nodes
+   *
+   * @return
+   */
   ~set() {
     clear();
   }
 
+  /**
+   * @brief Initialize a new set from a pair of iterators (begin/end)
+   * of any type (generic class).
+   *
+   * @param begin Iterator pointing at the starting point
+   * @param end Iterator pointing to the end
+   * @return
+   */
   template <typename I>
   set(I begin, I end) : _head(0), _count(0) {
     try {
@@ -74,9 +104,16 @@ public:
     }
   }
 
-  T operator[](int index) {
+  /**
+   * @brief Read-only array style access to the set's data
+   *
+   * @param index Index of the element to be red
+   * @return element at index's position
+   * @throws index_out_of_bounds_exception
+   */
+  T operator[](int index) const {
     if (index >= _count || index < 0) {
-      throw new index_out_of_bound_exception();
+      throw new index_out_of_bounds_exception();
     }
 
     int items = 0;
@@ -87,10 +124,16 @@ public:
       items++;
     }
 
-    // TODO: Checks
     return tmp->value;
   }
 
+  /**
+   * @brief Insert a new value to the end of the set
+   *
+   * @param value Value to be inserted
+   * @return
+   * @throws value_already_exists
+   */
   void add(const T &value) {
     if (contains(value)) {
       throw new value_already_exists();
@@ -114,6 +157,13 @@ public:
     _count++;
   }
 
+  /**
+   * @brief Remove an element from the list by value
+   *
+   * @param value The value to be removed
+   * @return
+   * @throws value_does_not_exists
+   */
   void remove(const T &value) {
     if (! contains(value)) {
       throw new value_does_not_exists();
@@ -136,6 +186,12 @@ public:
     _count--;
   }
 
+  /**
+   * @brief Check if the value is present into the set
+   *
+   * @param value The value to be checked
+   * @return true if present | false otherwise
+   */
   bool contains(const T &value) const {
     node *tmp = _head;
     while (tmp != 0) {
@@ -149,6 +205,11 @@ public:
     return false;
   }
 
+  /**
+   * @brief Remove all the elements from the set, freeing up memory
+   *
+   * @return
+   */
   void clear() {
     node *tmp = _head;
 
@@ -174,8 +235,14 @@ public:
     return _count;
   }
 
+  /**
+   * @brief Const iterator implementation
+   */
   class const_iterator {
 	private:
+    /**
+     * @var Pointer to the current element of the set
+     */
     const node *_current;
 
 	public:
@@ -185,35 +252,71 @@ public:
 		typedef const T*                  pointer;
 		typedef const T&                  reference;
 
+    /**
+     * @brief Construct const_iterator pointing to null
+     *
+     * @return
+     */
 		const_iterator()
       : _current(0) {
 			//
 		}
 
+    /**
+     * @brief Construct const iterator as a copy of another one
+     *
+     * @param other The reference const_iterator
+     * @return
+     */
 		const_iterator(const const_iterator &other)
       : _current(other._current) {
 			//
 		}
 
+    /**
+     * @brief Assignment operator
+     *
+     * @param other The reference const_iterator
+     * @return
+     */
 		const_iterator& operator=(const const_iterator &other) {
 			_current = other._current;
       return *this;
 		}
 
+    /**
+     * @brief Destructor
+     *
+     * @return
+     */
 		~const_iterator() {
 			//
 		}
 
+    /**
+     * @brief Return the current value while dereferencing a pointer
+     *
+     * @return Value of the current pointed element
+     */
 		reference operator*() const {
 			return _current->value;
 		}
 
-		// Ritorna il puntatore al dato riferito dall'iteratore
+		/**
+     * @brief Return the address of the pointed element's value.
+     *
+     * @return Address of the current pointed value
+     */
 		pointer operator->() const {
 			return &(_current->value);
 		}
 
 		// Operatore di iterazione post-incremento
+    /**
+     * @brief Post-increment operator
+     *
+     * @return The current element as a cloned const_iterator
+     */
 		const_iterator operator++(int) {
 			const_iterator tmp(*this);
       _current = _current->next;
@@ -221,17 +324,32 @@ public:
 		}
 
 		// Operatore di iterazione pre-incremento
-		const_iterator& operator++() {
+    /**
+     * @brief Pre-increment operator
+     *
+     * @return A reference to the next element in the set as a const_iterator
+     */
+		const_iterator &operator++() {
 			_current = _current->next;
       return _current;
 		}
 
 		// Uguaglianza
+    /**
+     * @brief Compare two const_iterators for equality
+     *
+     * @return true if pointing to the same element | false otherwise
+     */
 		bool operator==(const const_iterator &other) const {
 			return _current == other._current;
 		}
 
 		// Diversita'
+    /**
+     * @brief Compare two const_iterator for inequality
+     *
+     * @return true if pointing to different elements | false otherwise
+     */
 		bool operator!=(const const_iterator &other) const {
 			return _current != other._current;
 		}
@@ -244,11 +362,20 @@ public:
 		}
 	};
 
-	// Ritorna l'iteratore all'inizio della sequenza dati
+	/**
+   * @brief Create a begin const_iterator
+   *
+   * @return A const_iterator pointing to the _head of the set's data
+   */
 	const_iterator begin() const {
 		return const_iterator(_head);
 	}
 
+  /**
+   * @brief Create an end const_iterator
+   *
+   * @return A const_iterator pointing to the _end of the set's data
+   */
 	const_iterator end() const {
 		return const_iterator(0);
 	}
