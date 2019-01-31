@@ -1,6 +1,27 @@
 #include <iostream>
 #include "set.hpp"
 
+struct voce {
+  std::string nome;
+  std::string telefono;
+
+  voce(std::string n, std::string tel) : nome(n), telefono(tel)
+  {
+    //
+  }
+};
+
+struct voce_equals {
+  bool operator()(const voce &v1, const voce &v2) const {
+    return v1.telefono == v2.telefono;
+  }
+};
+
+std::ostream &operator<<(std::ostream &stream, const voce &voce) {
+  stream << "[" << voce.nome << ": " << voce.telefono << "]";
+  return stream;
+};
+
 struct is_even {
   bool operator()(const int x) {
     return x % 2 == 0;
@@ -104,6 +125,23 @@ void test_fondamentali() {
   std::cout << "EVEN + ODD = " << even + odd << std::endl;
 }
 
+void test_struct() {
+  set<voce, voce_equals> s;
+
+  // Add
+  std::cout << "# Adding elements to set #" << std::endl;
+  s.add(voce("Marco", "1234567890"));
+  s.add(voce("Giovanni", "123456789"));
+  s.add(voce("Marco", "9876543210"));
+
+  std::cout << s;
+}
+
 int main() {
+  std::cout << "!! Test fondamentali !!" << std::endl;
   test_fondamentali();
+  std::cout << std::endl;
+
+  std::cout << "!! Test struct !!" << std::endl;
+  test_struct();
 }
