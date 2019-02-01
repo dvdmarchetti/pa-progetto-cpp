@@ -355,7 +355,7 @@ public:
      */
 		const_iterator &operator++() {
 			_current = _current->next;
-      return _current;
+      return *this;
 		}
 
 		// Uguaglianza

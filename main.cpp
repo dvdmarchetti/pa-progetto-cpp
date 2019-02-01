@@ -69,6 +69,25 @@ struct voce_name_greater_than_M {
   }
 };
 
+struct set_equal {
+  bool operator()(const set<int> &set1, const set<int> &set2) const {
+    set<int>::const_iterator begin1, end1, begin2, end2;
+    begin1 = set1.begin(); end1 = set1.end();
+    begin2 = set2.begin(); end2 = set2.end();
+
+    while (begin1 != end1 && begin2 != end2) {
+      if (*begin1 != *begin2) {
+        return false;
+      }
+
+      ++begin1;
+      ++begin2;
+    }
+
+    return begin1 == end1 && begin2 == end2;
+  }
+};
+
 void test_fondamentali() {
   set<int> s;
 
@@ -251,6 +270,41 @@ void test_struct() {
   std::cout << "NAMES_GREATER + NAMES_LOWER = " << names_greater_than_m + names_lower_than_m << std::endl;
 }
 
+void test_dynamic_memory() {
+  set<set<int>, set_equal> multi_set;
+
+  // Add
+  std::cout << "# Adding elements to multi set #" << std::endl;
+
+  set<int> s1;
+  s1.add(5);
+  s1.add(10);
+  s1.add(15);
+  s1.add(20);
+
+  set<int> s2;
+  s2.add(4);
+  s2.add(8);
+  s2.add(12);
+  s2.add(16);
+
+  multi_set.add(s1);
+  multi_set.add(s2);
+
+  // Count + ostream<<
+  std::cout << "MS1 = " << multi_set << " // Count: " << multi_set.count() << std::endl;
+  assert(multi_set.count() == 2);
+
+  std::cout << std::endl;
+
+  // Copy constructor
+  std::cout << "# Copying s1 to s2 with copy constructor #" << std::endl;
+  set<set<int>, set_equal> cc_multi_set(multi_set);
+  std::cout << "MS2 = " << cc_multi_set << " // Count: " << cc_multi_set.count() << std::endl;
+
+  std::cout << std::endl;
+}
+
 int main() {
   std::cout << "!! Test fondamentali !!" << std::endl;
   test_fondamentali();
@@ -258,4 +312,8 @@ int main() {
 
   std::cout << "!! Test struct !!" << std::endl;
   test_struct();
+  std::cout << std::endl;
+
+  std::cout << "!! Test dynamic memory !!" << std::endl;
+  test_dynamic_memory();
 }
