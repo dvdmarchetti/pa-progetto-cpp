@@ -7,15 +7,46 @@
 #include <iterator> // std::forward_iterator_tag
 #include <cstddef>  // std::ptrdiff_t
 
+/**
+ * @brief Exception raised when a value is trying to be added
+ * but it already exists
+ */
 class value_already_exists {};
+
+/**
+ * @brief Exception raised when a value is trying to be removed
+ * but it hasn't been found in the set.
+ */
 class value_does_not_exists {};
+
+/**
+ * @brief Exception raised when we try to access an item with
+ * operator[], but the index is out of the array bounds.
+ */
 class index_out_of_bounds_exception {};
 
+/**
+ * @brief Set data structure implementation with no duplicated data allowed
+ *
+ * @tparam T value type
+ * @tparam std::equal_to<T> equal functor for items comparsion
+ */
 template <typename T, typename Equal = std::equal_to<T>>
 class set {
 private:
+  /**
+   * @brief Node structs for dynamic list implementation.
+   * Each node holds reference to the next element in the
+   * list or null(0).
+   */
   struct node {
+    /**
+     * @brief Templated value data.
+     */
     T value;
+    /**
+     * @brief Next list item pointer
+     */
     node* next;
 
     node() : next(0) {}
@@ -107,14 +138,11 @@ public:
   /**
    * @brief Read-only array style access to the set's data
    *
-   * @param index Index of the element to be red
+   * @param index Index of the element to be read
    * @return element at index's position
-   * @throws index_out_of_bounds_exception
    */
   T operator[](int index) const {
-    if (index >= _count || index < 0) {
-      throw new index_out_of_bounds_exception();
-    }
+    assert(index < _count && index >= 0);
 
     int items = 0;
     node *tmp = _head;
@@ -241,7 +269,7 @@ public:
   class const_iterator {
 	private:
     /**
-     * @var Pointer to the current element of the set
+     * @brief Pointer to the current element of the set
      */
     const node *_current;
 
@@ -258,9 +286,7 @@ public:
      * @return
      */
 		const_iterator()
-      : _current(0) {
-			//
-		}
+      : _current(0) { }
 
     /**
      * @brief Construct const iterator as a copy of another one
@@ -269,9 +295,7 @@ public:
      * @return
      */
 		const_iterator(const const_iterator &other)
-      : _current(other._current) {
-			//
-		}
+      : _current(other._current) { }
 
     /**
      * @brief Assignment operator
@@ -357,9 +381,8 @@ public:
 	private:
 		friend class set;
 
-		const_iterator(const node *p) : _current(p) {
-			//
-		}
+		const_iterator(const node *p)
+      : _current(p) { }
 	};
 
 	/**

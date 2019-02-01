@@ -1,14 +1,39 @@
 #include <iostream>
 #include "set.hpp"
 
+/**
+ * @brief Struct functor for filter_out function testing
+ */
+struct is_even {
+  bool operator()(const int x) {
+    return x % 2 == 0;
+  }
+};
+
+/**
+ * @brief Struct functor for filter_out function testing
+ */
+struct is_odd {
+  bool operator()(const int x) {
+    return x % 2 == 1;
+  }
+};
+
+/**
+ * @brief Voce struct with basic string fields.
+ */
 struct voce {
   std::string nome;
   std::string telefono;
 
-  voce(std::string n, std::string tel) : nome(n), telefono(tel)
-  {
-    //
-  }
+  /**
+   * @brief Construct a new voce object with parameters
+   *
+   * @param n contact name
+   * @param tel phone number
+   */
+  voce(std::string n, std::string tel)
+    : nome(n), telefono(tel) { }
 };
 
 std::ostream &operator<<(std::ostream &stream, const voce &voce) {
@@ -16,30 +41,28 @@ std::ostream &operator<<(std::ostream &stream, const voce &voce) {
   return stream;
 };
 
+/**
+ * @brief Struct functor used in set to check when two voce
+ * objects are equal.
+ */
 struct voce_equals {
   bool operator()(const voce &v1, const voce &v2) const {
     return v1.nome == v2.nome && v1.telefono == v2.telefono;
   }
 };
 
-struct is_even {
-  bool operator()(const int x) {
-    return x % 2 == 0;
-  }
-};
-
-struct is_odd {
-  bool operator()(const int x) {
-    return x % 2 == 1;
-  }
-};
-
+/**
+ * @brief Struct functor for filter_out function testing.
+ */
 struct voce_name_lower_than_M {
   bool operator()(const voce &voce) {
     return voce.nome[0] < 'M';
   }
 };
 
+/**
+ * @brief Struct functor for filter_out function testing.
+ */
 struct voce_name_greater_than_M {
   bool operator()(const voce &voce) {
     return voce.nome[0] >= 'M';
