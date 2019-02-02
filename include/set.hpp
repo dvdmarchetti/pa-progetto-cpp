@@ -17,13 +17,7 @@ class value_already_exists {};
  * @brief Exception raised when a value is trying to be removed
  * but it hasn't been found in the set.
  */
-class value_does_not_exists {};
-
-/**
- * @brief Exception raised when we try to access an item with
- * operator[], but the index is out of the array bounds.
- */
-class index_out_of_bounds_exception {};
+class value_does_not_exist {};
 
 /**
  * @brief Set data structure implementation with no duplicated data allowed
@@ -190,11 +184,11 @@ public:
    *
    * @param value The value to be removed
    * @return
-   * @throws value_does_not_exists
+   * @throws value_does_not_exist
    */
   void remove(const T &value) {
     if (! contains(value)) {
-      throw new value_does_not_exists();
+      throw new value_does_not_exist();
     }
 
     node *tmp = _head, *prev = _head;
@@ -404,12 +398,19 @@ public:
 	}
 };
 
+/**
+ * @brief Print operator for a generic set
+ *
+ * @param stream the output stream to print on
+ * @param s the set to be printed
+ * @return the output stream
+ */
 template <typename T, typename E>
-std::ostream &operator<<(std::ostream &stream, const set<T, E> &set) {
+std::ostream &operator<<(std::ostream &stream, const set<T, E> &s) {
   typename set<T, E>::const_iterator begin, end;
 
-  begin = set.begin();
-  end = set.end();
+  begin = s.begin();
+  end = s.end();
 
   stream << "{";
   while (begin != end) {
@@ -425,13 +426,21 @@ std::ostream &operator<<(std::ostream &stream, const set<T, E> &set) {
   return stream;
 }
 
+/**
+ * @brief Return a new set with elements which doesn't
+ * satisfy the condition
+ *
+ * @param s the set to filter
+ * @param condition filtering condition
+ * @return the new set with elements not matching the condition
+ */
 template <typename T, typename E, typename P>
-set<T, E> filter_out(const set<T, E> s, P pred) {
+set<T, E> filter_out(const set<T, E> &s, P condition) {
   set<T, E> tmp;
   typename set<T, E>::const_iterator begin, end;
 
   for (begin = s.begin(), end = s.end(); begin != end; begin++) {
-    if (pred(*begin)) {
+    if (! condition(*begin)) {
       tmp.add(*begin);
     }
   }
@@ -439,8 +448,15 @@ set<T, E> filter_out(const set<T, E> s, P pred) {
   return tmp;
 }
 
+/**
+ * @brief Concatenate two sets and return a new one
+ *
+ * @param s1 the first set
+ * @param s2 the second set
+ * @return the new set containing all the elements from the given ones
+ */
 template <typename T, typename E>
-set<T, E> operator+(const set<T, E> s1, const set<T, E> s2) {
+set<T, E> operator+(const set<T, E> &s1, const set<T, E> &s2) {
   set<T, E> tmp(s1);
   typename set<T, E>::const_iterator begin, end;
 
