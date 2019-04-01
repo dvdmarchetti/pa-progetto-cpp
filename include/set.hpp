@@ -261,25 +261,25 @@ public:
    * @brief Const iterator implementation
    */
   class const_iterator {
-	private:
+    private:
     /**
      * @brief Pointer to the current element of the set
      */
     const node *_current;
 
-	public:
-		typedef std::forward_iterator_tag iterator_category;
-		typedef T                         value_type;
-		typedef ptrdiff_t                 difference_type;
-		typedef const T*                  pointer;
-		typedef const T&                  reference;
+    public:
+        typedef std::forward_iterator_tag iterator_category;
+        typedef T                         value_type;
+        typedef ptrdiff_t                 difference_type;
+        typedef const T*                  pointer;
+        typedef const T&                  reference;
 
     /**
      * @brief Construct const_iterator pointing to null
      *
      * @return
      */
-		const_iterator()
+        const_iterator()
       : _current(0) { }
 
     /**
@@ -288,7 +288,7 @@ public:
      * @param other The reference const_iterator
      * @return
      */
-		const_iterator(const const_iterator &other)
+        const_iterator(const const_iterator &other)
       : _current(other._current) { }
 
     /**
@@ -297,105 +297,105 @@ public:
      * @param other The reference const_iterator
      * @return
      */
-		const_iterator& operator=(const const_iterator &other) {
-			_current = other._current;
+        const_iterator& operator=(const const_iterator &other) {
+            _current = other._current;
       return *this;
-		}
+        }
 
     /**
      * @brief Destructor
      *
      * @return
      */
-		~const_iterator() {
-			//
-		}
+        ~const_iterator() {
+            //
+        }
 
     /**
      * @brief Return the current value while dereferencing a pointer
      *
      * @return Value of the current pointed element
      */
-		reference operator*() const {
-			return _current->value;
-		}
+        reference operator*() const {
+            return _current->value;
+        }
 
-		/**
+        /**
      * @brief Return the address of the pointed element's value.
      *
      * @return Address of the current pointed value
      */
-		pointer operator->() const {
-			return &(_current->value);
-		}
+        pointer operator->() const {
+            return &(_current->value);
+        }
 
-		// Operatore di iterazione post-incremento
+        // Operatore di iterazione post-incremento
     /**
      * @brief Post-increment operator
      *
      * @return The current element as a cloned const_iterator
      */
-		const_iterator operator++(int) {
-			const_iterator tmp(*this);
+        const_iterator operator++(int) {
+            const_iterator tmp(*this);
       _current = _current->next;
       return tmp;
-		}
+        }
 
-		// Operatore di iterazione pre-incremento
+        // Operatore di iterazione pre-incremento
     /**
      * @brief Pre-increment operator
      *
      * @return A reference to the next element in the set as a const_iterator
      */
-		const_iterator &operator++() {
-			_current = _current->next;
+        const_iterator &operator++() {
+            _current = _current->next;
       return *this;
-		}
+        }
 
-		// Uguaglianza
+        // Uguaglianza
     /**
      * @brief Compare two const_iterators for equality
      *
      * @return true if pointing to the same element | false otherwise
      */
-		bool operator==(const const_iterator &other) const {
-			return _current == other._current;
-		}
+        bool operator==(const const_iterator &other) const {
+            return _current == other._current;
+        }
 
-		// Diversita'
+        // Diversita'
     /**
      * @brief Compare two const_iterator for inequality
      *
      * @return true if pointing to different elements | false otherwise
      */
-		bool operator!=(const const_iterator &other) const {
-			return _current != other._current;
-		}
+        bool operator!=(const const_iterator &other) const {
+            return _current != other._current;
+        }
 
-	private:
-		friend class set;
+    private:
+        friend class set;
 
-		const_iterator(const node *p)
+        const_iterator(const node *p)
       : _current(p) { }
-	};
+    };
 
-	/**
+    /**
    * @brief Create a begin const_iterator
    *
    * @return A const_iterator pointing to the _head of the set's data
    */
-	const_iterator begin() const {
-		return const_iterator(_head);
-	}
+    const_iterator begin() const {
+        return const_iterator(_head);
+    }
 
   /**
    * @brief Create an end const_iterator
    *
    * @return A const_iterator pointing to the _end of the set's data
    */
-	const_iterator end() const {
-		return const_iterator(0);
-	}
+    const_iterator end() const {
+        return const_iterator(0);
+    }
 };
 
 /**
